@@ -9,12 +9,13 @@ which patterns they commonly use. I started this with only basic knowledge
 about Clojure and ClojureScript, but not without knowledge about the
 Lisp-family of languages or functional programming in general. 
 
-My goal here is to "mine" different projects for things to learn about Clojure.
+My goal here is to "mine" different projects for things to learn about Clojure. As such I may be a little all
+over the place, searching for things to learn.
 
 First out is the utility [kibit](https://github.com/jonase/kibit), which is a static analyzer for Clojure code
-that detects code that can be made more idiomatic.
+that detects code that can be made more idiomatic. How suitable!
 
-Just to get an idea what it's doing I ran the utility on another open-source project, asciinema-player.
+Just to get an idea of what it's doing I ran the utility on another open-source project, asciinema-player.
 
 ```shell
 $ lein kibit
@@ -36,6 +37,9 @@ Consider using:
 instead of:
   (. js/document (getElementById "player"))
 ```
+
+It doesn't approve of using the threading macro in this case, and suggests a different way of calling
+the javascript function `getElementById`.
 
 
 ## First steps
@@ -76,7 +80,7 @@ Apparently they return a map with information about how the expression can be im
 ```
 
 I was confused as to how it could know the line and column numbers of the expression, but since this is a Lisp I
-shouldn't have been. Reading along I found the `meta` function, that return the metadata of an object.
+shouldn't have been. Reading along I found the `meta` function, that returns the metadata of an object.
 
 ```clojure
 (meta '(+ 1 a))
@@ -138,3 +142,77 @@ if we want to extract some specific nodes. We could then build a simple reporter
 
 Wow, so simple!
 
+## Pattern 4 - collections
+
+Let's take a look at how the simplification rules are defined. Within the `rules` folder the rules are divided by the
+type into different files, each containing a defrules form. Defrules is a macro defined within the project. Def* macros
+are certainly very common in the Lisp world, but before looking at how they are defined, let's see what we can learn
+from the predefined rules.
+
+Here are some rules for collections:
+```clojure
+(defrules rules
+  ;;vector
+  [(conj [] . ?x) (vector . ?x)]
+  [(into [] ?coll) (vec ?coll)]
+  ...)
+```
+
+So, use the vector creation methods instead of `conj` or `into` into empty vectors.
+
+Here is another rule:
+```clojure
+  ...
+  [(not (empty? ?x)) (seq ?x)]
+  ...
+```
+
+`seq` is apparently the idiomatic way of checking if a collection contains items. Not to be confused with `seq?` which
+checks if its argument implements `ISeq`. Or `sequential?` which checks if the argument implements Sequential. What is
+the difference? `ISeq` demands that the object implements `first`, `rest` and `cons`,
+and `Sequential` indicates the object can be iterated over. For example, vectors are not `seq?` but they are
+`sequential?`. Lists are both. Maps and sets are neither.
+
+And what about `coll?`? It checks if the argument implements `IPersistentCollection`, which is true for all the above
+mentioned data structures: vectors, lists, maps and sets.
+
+## Pattern 5 - macros
+
+Macros have become one of the defining features of Lisps. They work especially well because code is represented as
+a data structure within the language itself. It will be interesting to see how they are utilized across
+different Clojure projects. 
+
+As mentioned the `defrules` construction is defined as a macro in kibit. Macros are handled a bit differently
+across different Lisps, so let's check out how Clojure does them.
+
+```clojure
+(defmacro defrules [name & rules]
+  `(let [rules# (for [rule# '~rules]
+                  (if (raw-rule? rule#)
+                    (eval rule#) ;; raw rule, no need to compile
+                    (compile-rule rule#)))]
+     (def ~name (vec rules#))))
+```
+
+You can almost guess what happens if you have seen Common Lisp macros. The backtick allows us to quote the form except
+for the parts we want to be evaluated (for example: `~rules`). The symbol `#` gives us a shortcut to generate symbols
+for our variables, so that we may avoid name clashes with surrounding code. You could also call `gensym` directly.
+
+```clojure
+(gensym "rules")
+=> rules710911
+```
+
+The macro itself creates a new variable within the current namespace, with the specified name, containing a vector with
+the specified rules. Each rule file (arithmetic.clj, collection.clj, etc.) has its own defrules declaration, and they
+are collectively exposed through the file rules.clj.
+
+I don't understand how the syntax of the rules is handled, or the use of `core.logic` in `compile-rule`, but it is
+something I would like to revisit in a future post. This post is getting long enough.
+
+## Conclusion
+
+In this post I got to see a first example of a real-world Clojure project. I learned some practical details about
+code exploration, destructuring of maps, tree walking, what defines different collection types, and macros.
+
+I hope to continue with kibit in a future post, and understand why and how it's using the logic programming library.
