@@ -1,4 +1,5 @@
-baseURL = "http://example.org/"
+baseURL = "https://beakdoctor.github.io/patterns/"
 languageCode = "en-us"
 title = "Patterns in Parens"
 theme = "ananke"
+publishDir = "docs"

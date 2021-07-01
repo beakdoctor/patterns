@@ -1,7 +1,7 @@
 ---
 title: "Chapter 1"
 date: 2021-06-29T20:47:45+02:00
-draft: true
+draft: false
 ---
 
 This is an attempt to learn more about how people structure Clojure projects and

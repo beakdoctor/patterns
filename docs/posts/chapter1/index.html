@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Chapter 1 | Patterns in Parens</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="This is an attempt to learn more about how people structure Clojure projects and which patterns they commonly use. I started this with only basic knowledge about Clojure and ClojureScript, but not without knowledge about the Lisp-family of languages or functional programming in general.
+My goal here is to &ldquo;mine&rdquo; different projects for things to learn about Clojure. As such I may be a little all over the place, searching for things to learn.">
+    <meta name="generator" content="Hugo 0.84.1" />
+    
+    
+      <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    
+
+    
+<link rel="stylesheet" href="/patterns/ananke/css/main.min.css" >
+
+
+
+
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Chapter 1" />
+<meta property="og:description" content="This is an attempt to learn more about how people structure Clojure projects and which patterns they commonly use. I started this with only basic knowledge about Clojure and ClojureScript, but not without knowledge about the Lisp-family of languages or functional programming in general.
+My goal here is to &ldquo;mine&rdquo; different projects for things to learn about Clojure. As such I may be a little all over the place, searching for things to learn." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://beakdoctor.github.io/patterns/posts/chapter1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-06-29T20:47:45&#43;02:00" />
+<meta property="article:modified_time" content="2021-06-29T20:47:45&#43;02:00" />
+
+<meta itemprop="name" content="Chapter 1">
+<meta itemprop="description" content="This is an attempt to learn more about how people structure Clojure projects and which patterns they commonly use. I started this with only basic knowledge about Clojure and ClojureScript, but not without knowledge about the Lisp-family of languages or functional programming in general.
+My goal here is to &ldquo;mine&rdquo; different projects for things to learn about Clojure. As such I may be a little all over the place, searching for things to learn."><meta itemprop="datePublished" content="2021-06-29T20:47:45&#43;02:00" />
+<meta itemprop="dateModified" content="2021-06-29T20:47:45&#43;02:00" />
+<meta itemprop="wordCount" content="1249">
+<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Chapter 1"/>
+<meta name="twitter:description" content="This is an attempt to learn more about how people structure Clojure projects and which patterns they commonly use. I started this with only basic knowledge about Clojure and ClojureScript, but not without knowledge about the Lisp-family of languages or functional programming in general.
+My goal here is to &ldquo;mine&rdquo; different projects for things to learn about Clojure. As such I may be a little all over the place, searching for things to learn."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/patterns/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Patterns in Parens
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+  <div id="sharing" class="mt3">
+
+    
+    <a href="https://www.facebook.com/sharer.php?u=https://beakdoctor.github.io/patterns/posts/chapter1/" class="facebook no-underline" aria-label="share on Facebook">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M28.765,50.32h6.744V33.998h4.499l0.596-5.624h-5.095  l0.007-2.816c0-1.466,0.14-2.253,2.244-2.253h2.812V17.68h-4.5c-5.405,0-7.307,2.729-7.307,7.317v3.377h-3.369v5.625h3.369V50.32z   M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;"/></svg>
+
+    </a>
+
+    
+    
+    <a href="https://twitter.com/share?url=https://beakdoctor.github.io/patterns/posts/chapter1/&amp;text=Chapter%201" class="twitter no-underline" aria-label="share on Twitter">
+      <svg height="32px"  style="enable-background:new 0 0 67 67;" version="1.1" viewBox="0 0 67 67" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M37.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.568  C19.775,43.256,19,43.341,19,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.673,5.657-5,6.978-8.221c0.713-1.716,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C39.766,21.902,38.131,21.944,37.167,22.283z M33,64C16.432,64,3,50.569,3,34S16.432,4,33,4  s30,13.431,30,30S49.568,64,33,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/></svg>
+
+    </a>
+
+    
+    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://beakdoctor.github.io/patterns/posts/chapter1/&amp;title=Chapter%201" class="linkedin no-underline" aria-label="share on LinkedIn">
+      <svg  height="32px"  style="enable-background:new 0 0 65 65;" version="1.1" viewBox="0 0 65 65" width="32px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <path d="M50.837,48.137V36.425c0-6.275-3.35-9.195-7.816-9.195  c-3.604,0-5.219,1.983-6.119,3.374V27.71h-6.79c0.09,1.917,0,20.427,0,20.427h6.79V36.729c0-0.609,0.044-1.219,0.224-1.655  c0.49-1.22,1.607-2.483,3.482-2.483c2.458,0,3.44,1.873,3.44,4.618v10.929H50.837z M22.959,24.922c2.367,0,3.842-1.57,3.842-3.531  c-0.044-2.003-1.475-3.528-3.797-3.528s-3.841,1.524-3.841,3.528c0,1.961,1.474,3.531,3.753,3.531H22.959z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z M26.354,48.137V27.71h-6.789v20.427  H26.354z" style="fill-rule:evenodd;clip-rule:evenodd;fill:;"/>
+</svg>
+
+    </a>
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Chapter 1</h1>
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2021-06-29T20:47:45+02:00">June 29, 2021</time>
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links nested-img mid-gray pr4-l w-two-thirds-l"><p>This is an attempt to learn more about how people structure Clojure projects and
+which patterns they commonly use. I started this with only basic knowledge
+about Clojure and ClojureScript, but not without knowledge about the
+Lisp-family of languages or functional programming in general.</p>
+<p>My goal here is to &ldquo;mine&rdquo; different projects for things to learn about Clojure. As such I may be a little all
+over the place, searching for things to learn.</p>
+<p>First out is the utility <a href="https://github.com/jonase/kibit">kibit</a>, which is a static analyzer for Clojure code
+that detects code that can be made more idiomatic. How suitable!</p>
+<p>Just to get an idea of what it&rsquo;s doing I ran the utility on another open-source project, asciinema-player.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ lein kibit
+At src/asciinema/player/core.cljs:26:
+Consider using:
+  <span style="color:#f92672">(</span>vt/feed-str <span style="color:#f92672">(</span>vt/make-vt <span style="color:#f92672">(</span>or width 80<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>or height 24<span style="color:#f92672">))</span> text<span style="color:#f92672">)</span>
+instead of:
+  <span style="color:#f92672">(</span>-&gt; <span style="color:#f92672">(</span>vt/make-vt <span style="color:#f92672">(</span>or width 80<span style="color:#f92672">)</span> <span style="color:#f92672">(</span>or height 24<span style="color:#f92672">))</span> <span style="color:#f92672">(</span>vt/feed-str text<span style="color:#f92672">))</span>
+
+At dev/cljs/asciinema/player/dev.cljs:57:
+Consider using:
+  <span style="color:#f92672">(</span>.getElementById js/document <span style="color:#e6db74">&#34;player&#34;</span><span style="color:#f92672">)</span>
+instead of:
+  <span style="color:#f92672">(</span>. js/document <span style="color:#f92672">(</span>getElementById <span style="color:#e6db74">&#34;player&#34;</span><span style="color:#f92672">))</span>
+
+At dev/cljs/asciinema/player/dev.cljs:77:
+Consider using:
+  <span style="color:#f92672">(</span>.getElementById js/document <span style="color:#e6db74">&#34;player&#34;</span><span style="color:#f92672">)</span>
+instead of:
+  <span style="color:#f92672">(</span>. js/document <span style="color:#f92672">(</span>getElementById <span style="color:#e6db74">&#34;player&#34;</span><span style="color:#f92672">))</span>
+</code></pre></div><p>It doesn&rsquo;t approve of using the threading macro in this case, and suggests a different way of calling
+the javascript function <code>getElementById</code>.</p>
+<h2 id="first-steps">First steps</h2>
+<p>After getting the project and the REPL up and running within Cursive I searched
+for a suitable entry point to begin my studies, and landed on the file
+<code>check.clj</code>, and the functions <code>check-file</code> and <code>check-expr</code>.</p>
+<p><em>The repository contains two sub-projects, and I ran into some crashes
+with Cursive unless I opened the sub-projects separately such that
+<code>project.clj</code> would be in the root of the IDEA project.</em></p>
+<h2 id="pattern-1---comment-block">Pattern 1 - comment block</h2>
+<p>An alternative to directly inputting forms into the REPL is to create comment
+forms. By putting them within the file itself we get to save illustrative
+code blocks that we can easily go back to and evaluate whenever we want. I
+choose to create this block to understand what these functions were doing.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">comment</span>
+  (<span style="color:#a6e22e">check-file</span> <span style="color:#e6db74">&#34;src/kibit/check.clj&#34;</span>)
+  (<span style="color:#a6e22e">check-expr</span> <span style="color:#f92672">&#39;</span>(+ <span style="color:#ae81ff">1</span> a))
+  (<span style="color:#a6e22e">check-expr</span> (list <span style="color:#e6db74">&#39;+</span> <span style="color:#ae81ff">1</span> <span style="color:#e6db74">&#39;a</span>))
+  (<span style="color:#a6e22e">check-expr</span> <span style="color:#f92672">&#39;</span>(<span style="color:#66d9ef">if </span>true <span style="color:#e6db74">:a</span> nil)))
+</code></pre></div><p>Apparently they return a map with information about how the expression can be improved.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">check-expr</span> <span style="color:#f92672">&#39;</span>(+ <span style="color:#ae81ff">1</span> a))
+=&gt; {<span style="color:#e6db74">:expr</span> (+ <span style="color:#ae81ff">1</span> a)
+    <span style="color:#e6db74">:line</span> <span style="color:#ae81ff">213</span>
+    <span style="color:#e6db74">:column</span> <span style="color:#ae81ff">16</span>
+    <span style="color:#e6db74">:end-line</span> nil
+    <span style="color:#e6db74">:end-column</span> nil
+    <span style="color:#e6db74">:alt</span> (inc a)}
+</code></pre></div><p>I was confused as to how it could know the line and column numbers of the expression, but since this is a Lisp I
+shouldn&rsquo;t have been. Reading along I found the <code>meta</code> function, that returns the metadata of an object.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(meta <span style="color:#f92672">&#39;</span>(+ <span style="color:#ae81ff">1</span> a))
+=&gt; {<span style="color:#e6db74">:line</span> <span style="color:#ae81ff">216</span>, <span style="color:#e6db74">:column</span> <span style="color:#ae81ff">10</span>}
+</code></pre></div><h2 id="pattern-2---associative-destructuring">Pattern 2 - associative destructuring</h2>
+<p>The function <code>check-file</code> had a let-expression that initially threw me off for a while. <code>kw-opts</code> is an argument passed
+to the function.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">let </span>[{<span style="color:#e6db74">:keys</span> [rules guard resolution reporter init-ns]
+       <span style="color:#e6db74">:or</span>   {reporter reporters/cli-reporter}}
+      (merge default-args
+             (apply hash-map kw-opts))]
+  ...)
+</code></pre></div><p>There are a few different ways of <a href="https://clojure.org/guides/destructuring">destructuring</a> associative structures,
+but in this case we extract the listed keys, and the <code>reporter</code> key gets a default value in case it is missing. The
+other keys have default values from the <code>default-args</code> map. So in essence this is keyword args with default values.</p>
+<h2 id="pattern-3---tree-walking">Pattern 3 - tree walking</h2>
+<p><code>check-expr</code> applies simplifications deeply on the forms you pass to it.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">check-expr</span> <span style="color:#f92672">&#39;</span>(<span style="color:#66d9ef">if </span>true (+ a <span style="color:#ae81ff">1</span>) nil))
+=&gt; {<span style="color:#e6db74">:expr</span> (<span style="color:#66d9ef">if </span>true (+ a <span style="color:#ae81ff">1</span>) nil), ..., <span style="color:#e6db74">:alt</span> (when true (inc a))}
+</code></pre></div><p>It made me curious about the built-in facilities to traverse tree structures, and I found out about <code>walk</code> and
+<code>tree-seq</code>.</p>
+<p>Firstly, with <code>walk/prewalk</code> we can try to implement our own little simplifier.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">let </span>[simplify-fn <span style="color:#f92672">#</span>(<span style="color:#66d9ef">if </span>(= <span style="color:#f92672">&#39;</span>(+ a <span style="color:#ae81ff">1</span>) %) <span style="color:#f92672">&#39;</span>(inc a) %)]
+    (<span style="color:#a6e22e">clojure.walk/prewalk</span> simplify-fn <span style="color:#f92672">&#39;</span>(<span style="color:#66d9ef">if </span>true (+ (+ a <span style="color:#ae81ff">1</span>) (+ a <span style="color:#ae81ff">1</span>)))))
+=&gt; (<span style="color:#66d9ef">if </span>true (+ (inc a) (inc a)))
+</code></pre></div><p>It&rsquo;s very stupid, but it gets the job done. We can also get a sequence of the nodes in the tree by using <code>tree-seq</code>
+if we want to extract some specific nodes. We could then build a simple reporter for our little simplifier:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">let </span>[simplify-fn <span style="color:#f92672">#</span>(<span style="color:#66d9ef">if </span>(= <span style="color:#f92672">&#39;</span>(+ a <span style="color:#ae81ff">1</span>) %) <span style="color:#f92672">&#39;</span>(inc a) %)
+      simplifiable <span style="color:#f92672">#</span>(not (= (<span style="color:#a6e22e">simplify-fn</span> %) %))]
+  (map (<span style="color:#66d9ef">fn </span>[e] {<span style="color:#e6db74">:expr</span> e <span style="color:#e6db74">:meta</span> (meta e) <span style="color:#e6db74">:alt</span> (<span style="color:#a6e22e">simplify-fn</span> e)})
+       (filter simplifiable
+               (tree-seq seq?
+                         identity
+                         <span style="color:#f92672">&#39;</span>(<span style="color:#66d9ef">if </span>true (+ (+ a <span style="color:#ae81ff">1</span>) (+ a <span style="color:#ae81ff">1</span>)))))))
+=&gt;
+({<span style="color:#e6db74">:expr</span> (+ a <span style="color:#ae81ff">1</span>), <span style="color:#e6db74">:meta</span> {<span style="color:#e6db74">:line</span> <span style="color:#ae81ff">228</span>, <span style="color:#e6db74">:column</span> <span style="color:#ae81ff">55</span>}, <span style="color:#e6db74">:alt</span> (inc a)}
+ {<span style="color:#e6db74">:expr</span> (+ a <span style="color:#ae81ff">1</span>), <span style="color:#e6db74">:meta</span> {<span style="color:#e6db74">:line</span> <span style="color:#ae81ff">228</span>, <span style="color:#e6db74">:column</span> <span style="color:#ae81ff">63</span>}, <span style="color:#e6db74">:alt</span> (inc a)})
+</code></pre></div><p>Wow, so simple!</p>
+<h2 id="pattern-4---collections">Pattern 4 - collections</h2>
+<p>Let&rsquo;s take a look at how the simplification rules are defined. Within the <code>rules</code> folder the rules are divided by the
+type into different files, each containing a defrules form. Defrules is a macro defined within the project. Def* macros
+are certainly very common in the Lisp world, but before looking at how they are defined, let&rsquo;s see what we can learn
+from the predefined rules.</p>
+<p>Here are some rules for collections:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">defrules</span> rules
+  <span style="color:#75715e">;;vector</span>
+  [(conj [] <span style="color:#66d9ef">. </span>?x) (vector <span style="color:#66d9ef">. </span>?x)]
+  [(into [] ?coll) (<span style="color:#a6e22e">vec</span> ?coll)]
+  ...)
+</code></pre></div><p>So, use the vector creation methods instead of <code>conj</code> or <code>into</code> into empty vectors.</p>
+<p>Here is another rule:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">  ...
+  [(not (<span style="color:#a6e22e">empty?</span> ?x)) (seq ?x)]
+  ...
+</code></pre></div><p><code>seq</code> is apparently the idiomatic way of checking if a collection contains items. Not to be confused with <code>seq?</code> which
+checks if its argument implements <code>ISeq</code>. Or <code>sequential?</code> which checks if the argument implements Sequential. What is
+the difference? <code>ISeq</code> demands that the object implements <code>first</code>, <code>rest</code> and <code>cons</code>,
+and <code>Sequential</code> indicates the object can be iterated over. For example, vectors are not <code>seq?</code> but they are
+<code>sequential?</code>. Lists are both. Maps and sets are neither.</p>
+<p>And what about <code>coll?</code>? It checks if the argument implements <code>IPersistentCollection</code>, which is true for all the above
+mentioned data structures: vectors, lists, maps and sets.</p>
+<h2 id="pattern-5---macros">Pattern 5 - macros</h2>
+<p>Macros have become one of the defining features of Lisps. They work especially well because code is represented as
+a data structure within the language itself. It will be interesting to see how they are utilized across
+different Clojure projects.</p>
+<p>As mentioned the <code>defrules</code> construction is defined as a macro in kibit. Macros are handled a bit differently
+across different Lisps, so let&rsquo;s check out how Clojure does them.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">defmacro </span>defrules [name <span style="color:#f92672">&amp;</span> rules]
+  <span style="color:#f92672">`</span>(<span style="color:#66d9ef">let </span>[rules# (for [rule# <span style="color:#f92672">&#39;~</span>rules]
+                  (<span style="color:#66d9ef">if </span>(<span style="color:#a6e22e">raw-rule?</span> rule#)
+                    (eval rule#) <span style="color:#75715e">;; raw rule, no need to compile</span>
+                    (<span style="color:#a6e22e">compile-rule</span> rule#)))]
+     (<span style="color:#66d9ef">def </span><span style="color:#f92672">~</span>name (<span style="color:#a6e22e">vec</span> rules#))))
+</code></pre></div><p>You can almost guess what happens if you have seen Common Lisp macros. The backtick allows us to quote the form except
+for the parts we want to be evaluated (for example: <code>~rules</code>). The symbol <code>#</code> gives us a shortcut to generate symbols
+for our variables, so that we may avoid name clashes with surrounding code. You could also call <code>gensym</code> directly.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(gensym <span style="color:#e6db74">&#34;rules&#34;</span>)
+=&gt; rules710911
+</code></pre></div><p>The macro itself creates a new variable within the current namespace, with the specified name, containing a vector with
+the specified rules. Each rule file (arithmetic.clj, collection.clj, etc.) has its own defrules declaration, and they
+are collectively exposed through the file rules.clj.</p>
+<p>I don&rsquo;t understand how the syntax of the rules is handled, or the use of <code>core.logic</code> in <code>compile-rule</code>, but it is
+something I would like to revisit in a future post. This post is getting long enough.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>In this post I got to see a first example of a real-world Clojure project. I learned some practical details about
+code exploration, destructuring of maps, tree walking, what defines different collection types, and macros.</p>
+<p>I hope to continue with kibit in a future post, and understand why and how it&rsquo;s using the logic programming library.</p>
+<ul class="pa0">
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://beakdoctor.github.io/patterns/" >
+    &copy;  Patterns in Parens 2021 
+  </a>
+    <div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
