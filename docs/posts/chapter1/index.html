@@ -39,7 +39,7 @@ My goal here is to &ldquo;mine&rdquo; different projects for things to learn abo
 <meta itemprop="description" content="This is an attempt to learn more about how people structure Clojure projects and which patterns they commonly use. I started this with only basic knowledge about Clojure and ClojureScript, but not without knowledge about the Lisp-family of languages or functional programming in general.
 My goal here is to &ldquo;mine&rdquo; different projects for things to learn about Clojure. As such I may be a little all over the place, searching for things to learn."><meta itemprop="datePublished" content="2021-06-29T20:47:45&#43;02:00" />
 <meta itemprop="dateModified" content="2021-06-29T20:47:45&#43;02:00" />
-<meta itemprop="wordCount" content="1249">
+<meta itemprop="wordCount" content="1254">
 <meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Chapter 1"/>
 <meta name="twitter:description" content="This is an attempt to learn more about how people structure Clojure projects and which patterns they commonly use. I started this with only basic knowledge about Clojure and ClojureScript, but not without knowledge about the Lisp-family of languages or functional programming in general.
@@ -147,7 +147,7 @@ Lisp-family of languages or functional programming in general.</p>
 over the place, searching for things to learn.</p>
 <p>First out is the utility <a href="https://github.com/jonase/kibit">kibit</a>, which is a static analyzer for Clojure code
 that detects code that can be made more idiomatic. How suitable!</p>
-<p>Just to get an idea of what it&rsquo;s doing I ran the utility on another open-source project, asciinema-player.</p>
+<p>Just to get an idea of what it&rsquo;s doing I ran the utility on another open-source project, <a href="https://github.com/asciinema/asciinema-player">asciinema-player</a>.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">$ lein kibit
 At src/asciinema/player/core.cljs:26:
 Consider using:
@@ -198,16 +198,17 @@ shouldn&rsquo;t have been. Reading along I found the <code>meta</code> function,
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(meta <span style="color:#f92672">&#39;</span>(+ <span style="color:#ae81ff">1</span> a))
 =&gt; {<span style="color:#e6db74">:line</span> <span style="color:#ae81ff">216</span>, <span style="color:#e6db74">:column</span> <span style="color:#ae81ff">10</span>}
 </code></pre></div><h2 id="pattern-2---associative-destructuring">Pattern 2 - associative destructuring</h2>
-<p>The function <code>check-file</code> had a let-expression that initially threw me off for a while. <code>kw-opts</code> is an argument passed
-to the function.</p>
+<p>The function <code>check-file</code> had a let-expression that initially threw me off for a while. Here <code>kw-opts</code> is an argument
+passed to the function.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#66d9ef">let </span>[{<span style="color:#e6db74">:keys</span> [rules guard resolution reporter init-ns]
        <span style="color:#e6db74">:or</span>   {reporter reporters/cli-reporter}}
       (merge default-args
              (apply hash-map kw-opts))]
   ...)
-</code></pre></div><p>There are a few different ways of <a href="https://clojure.org/guides/destructuring">destructuring</a> associative structures,
-but in this case we extract the listed keys, and the <code>reporter</code> key gets a default value in case it is missing. The
-other keys have default values from the <code>default-args</code> map. So in essence this is keyword args with default values.</p>
+</code></pre></div><p>This is an example of destructuring. There are a few different ways of <a href="https://clojure.org/guides/destructuring">destructuring</a>
+associative structures, but in this case we extract the listed keys, and the <code>reporter</code> key gets a default value in
+case it is missing. The other keys have default values from the <code>default-args</code> map. So in essence this is keyword args
+with default values.</p>
 <h2 id="pattern-3---tree-walking">Pattern 3 - tree walking</h2>
 <p><code>check-expr</code> applies simplifications deeply on the forms you pass to it.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">check-expr</span> <span style="color:#f92672">&#39;</span>(<span style="color:#66d9ef">if </span>true (+ a <span style="color:#ae81ff">1</span>) nil))
@@ -232,9 +233,9 @@ if we want to extract some specific nodes. We could then build a simple reporter
  {<span style="color:#e6db74">:expr</span> (+ a <span style="color:#ae81ff">1</span>), <span style="color:#e6db74">:meta</span> {<span style="color:#e6db74">:line</span> <span style="color:#ae81ff">228</span>, <span style="color:#e6db74">:column</span> <span style="color:#ae81ff">63</span>}, <span style="color:#e6db74">:alt</span> (inc a)})
 </code></pre></div><p>Wow, so simple!</p>
 <h2 id="pattern-4---collections">Pattern 4 - collections</h2>
-<p>Let&rsquo;s take a look at how the simplification rules are defined. Within the <code>rules</code> folder the rules are divided by the
+<p>Let&rsquo;s take a look at how the simplification rules are defined. Within the <code>rules</code> folder the rules are divided by
 type into different files, each containing a defrules form. Defrules is a macro defined within the project. Def* macros
-are certainly very common in the Lisp world, but before looking at how they are defined, let&rsquo;s see what we can learn
+are certainly very common in the Lisp world, but before looking at how it&rsquo;s defined, let&rsquo;s see what we can learn
 from the predefined rules.</p>
 <p>Here are some rules for collections:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-clojure" data-lang="clojure">(<span style="color:#a6e22e">defrules</span> rules

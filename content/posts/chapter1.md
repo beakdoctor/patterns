@@ -15,7 +15,7 @@ over the place, searching for things to learn.
 First out is the utility [kibit](https://github.com/jonase/kibit), which is a static analyzer for Clojure code
 that detects code that can be made more idiomatic. How suitable!
 
-Just to get an idea of what it's doing I ran the utility on another open-source project, asciinema-player.
+Just to get an idea of what it's doing I ran the utility on another open-source project, [asciinema-player](https://github.com/asciinema/asciinema-player).
 
 ```shell
 $ lein kibit
@@ -89,8 +89,8 @@ shouldn't have been. Reading along I found the `meta` function, that returns the
 
 ## Pattern 2 - associative destructuring
 
-The function `check-file` had a let-expression that initially threw me off for a while. `kw-opts` is an argument passed
-to the function.
+The function `check-file` had a let-expression that initially threw me off for a while. Here `kw-opts` is an argument
+passed to the function.
 
 ```clojure
 (let [{:keys [rules guard resolution reporter init-ns]
@@ -100,9 +100,10 @@ to the function.
   ...)
 ```
 
-There are a few different ways of [destructuring](https://clojure.org/guides/destructuring) associative structures,
-but in this case we extract the listed keys, and the `reporter` key gets a default value in case it is missing. The
-other keys have default values from the `default-args` map. So in essence this is keyword args with default values.
+This is an example of destructuring. There are a few different ways of [destructuring](https://clojure.org/guides/destructuring)
+associative structures, but in this case we extract the listed keys, and the `reporter` key gets a default value in
+case it is missing. The other keys have default values from the `default-args` map. So in essence this is keyword args
+with default values.
 
 ## Pattern 3 - tree walking
 
@@ -144,9 +145,9 @@ Wow, so simple!
 
 ## Pattern 4 - collections
 
-Let's take a look at how the simplification rules are defined. Within the `rules` folder the rules are divided by the
+Let's take a look at how the simplification rules are defined. Within the `rules` folder the rules are divided by
 type into different files, each containing a defrules form. Defrules is a macro defined within the project. Def* macros
-are certainly very common in the Lisp world, but before looking at how they are defined, let's see what we can learn
+are certainly very common in the Lisp world, but before looking at how it's defined, let's see what we can learn
 from the predefined rules.
 
 Here are some rules for collections:
